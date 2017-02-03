@@ -77,7 +77,6 @@
 			<artifactId>spring-test</artifactId>
 		</dependency>
 
-
 		<!-- Hibernate -->
 
 		<dependency>
