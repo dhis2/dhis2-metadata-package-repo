@@ -1,4 +1,4 @@
-package org.hisp.metadata.api;
+package org.hisp.metadata.api.services;
 
 /**
  * Created by zubair on 03.02.17.

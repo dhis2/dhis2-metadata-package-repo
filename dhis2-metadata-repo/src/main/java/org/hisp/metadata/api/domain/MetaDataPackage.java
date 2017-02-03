@@ -19,11 +19,11 @@ public class MetaDataPackage extends BaseIdentifiableObject
 
     private String url;
 
-    private Map<String, String> icons = Maps.newHashMap();
-
-    private Map<String, String> license = Maps.newHashMap();
+    private License license;
 
     private Set<String> tags = Sets.newHashSet();
+
+    private Set<Icon> icons = Sets.newHashSet();
 
     private Set<PackageVersion> versions = Sets.newHashSet();
 
@@ -71,22 +71,22 @@ public class MetaDataPackage extends BaseIdentifiableObject
         this.url = url;
     }
 
-    public Map<String, String> getIcons()
+    public Set<Icon> getIcons()
     {
         return icons;
     }
 
-    public void setIcons( Map<String, String> icons )
+    public void setIcons( Set<Icon> icons )
     {
         this.icons = icons;
     }
 
-    public Map<String, String> getLicense()
+    public License getLicense()
     {
         return license;
     }
 
-    public void setLicense( Map<String, String> license )
+    public void setLicense( License license )
     {
         this.license = license;
     }

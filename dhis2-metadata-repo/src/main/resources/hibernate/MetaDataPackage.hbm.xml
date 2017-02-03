@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"
+        [<!ENTITY identifiableProperties SYSTEM "classpath:/identifiableproperties.hbm">]
+        >
 
 <hibernate-mapping package="org.hisp.metadata.api.domain">
     <class name="org.hisp.metadata.api.domain.MetaDataPackage" table="metadatapackagetable">
@@ -10,13 +12,30 @@
         <generator class="native"/>
     </id>
 
-        <properties name="name" />
+        &identifiableProperties;
 
-        <properties name="organizations" />
+        <property name="name" type="text"/>
 
-        <properties name="description" />
+        <property name="organization" type="text" />
 
-        <properties name="url" />
+        <property name="description" type="text" />
+
+        <property name="url" type="text" />
+
+        <component name="license" class="org.hisp.metadata.api.domain.License">
+            <property name="name" type="text" />
+            <property name="url" type="text" />
+        </component>
+
+        <set name="tags" table="package_tags" fetch="select" lazy="false">
+            <key column="tagsid"/>
+            <element type="text" column="tags"/>
+        </set>
+
+        <set name="versions" cascade="all" lazy="false">
+            <key column="metadatapackageid" />
+            <one-to-many class="org.hisp.metadata.api.domain.PackageVersion" />
+        </set>
 
     </class>
 </hibernate-mapping>
