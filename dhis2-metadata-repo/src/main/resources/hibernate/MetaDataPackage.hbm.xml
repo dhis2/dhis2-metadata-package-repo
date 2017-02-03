@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.hisp.metadata.api.domain">
+    <class name="org.hisp.metadata.api.domain.MetaDataPackage" table="metadatapackagetable">
+
+    <id name="id" column="metadatapackageid">
+        <generator class="native"/>
+    </id>
+
+        <properties name="name" />
+
+        <properties name="organizations" />
+
+        <properties name="description" />
+
+        <properties name="url" />
+
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <util:properties id="config" location="file:///opt/hisp/metadatapackage/metadatarepo.conf"/>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="file:///opt/hisp/appstore/appstore.conf"/>
+    </bean>
+
+    <!-- Transaction -->
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- Persistence -->
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
+                <!--
+                <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+                -->
+                <prop key="hibernate.hbm2ddl.auto">create</prop>
+            </props>
+        </property>
+
+        <property name="mappingResources">
+            <list>
+                <value>hibernate/MetaDataPackage.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="org.postgresql.Driver"/>
+        <property name="jdbcUrl" value="${connection.url}"/>
+        <property name="user" value="${connection.username}"/>
+        <property name="password" value="${connection.password}"/>
+    </bean>
+
+    <!-- Amazon S3 -->
+
+    <bean id="awsCredentialProvider" class="com.amazonaws.auth.BasicAWSCredentials">
+        <constructor-arg name="accessKey" value="${access.id}"/>
+        <constructor-arg name="secretKey" value="${secret.key}"/>
+    </bean>
+
+    <bean id="amazonS3Client" class="com.amazonaws.services.s3.AmazonS3Client">
+        <constructor-arg name="awsCredentials" ref="awsCredentialProvider"/>
+    </bean>
+
+<!--
+    <bean id="org.hisp.appstore.api.FileStorageService" class="org.hisp.appstore.service.AmazonS3FileStorageService">
+        <property name="amazonS3Client" ref="amazonS3Client"/>
+    </bean>
+-->
+
+</beans>

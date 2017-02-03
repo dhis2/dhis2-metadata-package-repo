@@ -28,7 +28,7 @@ public class MetaDataPackage extends BaseIdentifiableObject
     private Set<PackageVersion> versions = Sets.newHashSet();
 
     public MetaDataPackage()
-    {
+        {
     }
 
     public String getName()
