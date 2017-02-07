@@ -64,10 +64,8 @@
         <constructor-arg name="awsCredentials" ref="awsCredentialProvider"/>
     </bean>
 
-<!--
-    <bean id="org.hisp.appstore.api.FileStorageService" class="org.hisp.appstore.service.AmazonS3FileStorageService">
+    <bean id="org.hisp.appstore.api.FileStorageService" class="org.hisp.metadata.services.AmazonS3FileStorageService">
         <property name="amazonS3Client" ref="amazonS3Client"/>
     </bean>
--->
 
 </beans>
