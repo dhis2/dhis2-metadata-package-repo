@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 /**
  * Created by zubair on 06.02.17.
  */
@@ -85,14 +89,23 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
     }
 
     @Override
-    public void getAll()
+    public List<MetaDataPackage> getAll()
     {
-        repository.findAll();
+        List<MetaDataPackage> metaDataPackages = StreamSupport.stream( repository.findAll().spliterator(), false )
+                .collect( Collectors.toList() );
+
+        return metaDataPackages;
     }
 
     @Override
     public void save(MetaDataPackage metaDataPackage)
     {
         repository.save( metaDataPackage );
+    }
+
+    @Override
+    public List<MetaDataPackage> getPackagesByStatus( PackageStatus status )
+    {
+        return repository.getPackagesByStatus( status );
     }
 }

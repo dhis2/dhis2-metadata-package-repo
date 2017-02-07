@@ -9,5 +9,9 @@ import java.util.List;
  */
 public interface UserService
 {
+    User getCurrentUser();
 
+    User getUserByEmail( String email );
+
+    void addUser( User user );
 }

@@ -7,6 +7,7 @@ import org.hisp.metadata.api.services.RenderService;
 import org.hisp.metadata.api.support.WebMessage;
 import org.hisp.metadata.utils.WebMessageUtils;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import java.io.OutputStream;
 /**
  * Created by zubair on 01.12.16.
  */
+@Service
 public class DefaultRenderService
         implements RenderService
 {

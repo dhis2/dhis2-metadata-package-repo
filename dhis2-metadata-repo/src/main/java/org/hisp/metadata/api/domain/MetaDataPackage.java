@@ -24,6 +24,8 @@ public class MetaDataPackage extends BaseIdentifiableObject
 
     private PackageStatus status;
 
+    private User owner;
+
     private Set<String> tags = Sets.newHashSet();
 
     private Set<Icon> icons = Sets.newHashSet();
@@ -122,6 +124,16 @@ public class MetaDataPackage extends BaseIdentifiableObject
     public void setVersions(Set<PackageVersion> versions )
     {
         this.versions = versions;
+    }
+
+    public User getOwner()
+    {
+        return owner;
+    }
+
+    public void setOwner( User owner )
+    {
+        this.owner = owner;
     }
 
     @Override

@@ -41,6 +41,7 @@
             <list>
                 <value>hibernate/MetaDataPackage.hbm.xml</value>
                 <value>hibernate/PackageVersion.hbm.xml</value>
+                <value>hibernate/User.hbm.xml</value>
             </list>
         </property>
     </bean>

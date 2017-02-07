@@ -5,6 +5,8 @@ import org.hisp.metadata.api.domain.PackageStatus;
 import org.hisp.metadata.api.domain.PackageVersion;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * Created by zubair on 03.02.17.
  */
@@ -13,6 +15,8 @@ public interface MetaDataPackageService
     MetaDataPackage get( int id );
 
     MetaDataPackage get( String uid );
+
+    List<MetaDataPackage> getPackagesByStatus( PackageStatus status );
 
     void update( MetaDataPackage metaDataPackage );
 
@@ -30,5 +34,5 @@ public interface MetaDataPackageService
 
     void save( MetaDataPackage metaDataPackage );
 
-    void getAll();
+    List<MetaDataPackage> getAll();
 }
