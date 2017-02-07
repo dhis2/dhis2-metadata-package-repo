@@ -13,7 +13,7 @@
     <util:properties id="config" location="file:///opt/hisp/metadatapackage/metadatarepo.conf"/>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location" value="file:///opt/hisp/appstore/appstore.conf"/>
+        <property name="location" value="file:///opt/hisp/metadatapackage/metadatarepo.conf"/>
     </bean>
 
     <!-- Transaction -->
@@ -40,6 +40,7 @@
         <property name="mappingResources">
             <list>
                 <value>hibernate/MetaDataPackage.hbm.xml</value>
+                <value>hibernate/PackageVersion.hbm.xml</value>
             </list>
         </property>
     </bean>

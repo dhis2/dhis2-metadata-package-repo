@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"
-        [<!ENTITY identifiableProperties SYSTEM "classpath:/identifiableproperties.hbm">]
-        >
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="org.hisp.metadata.api.domain">
     <class name="org.hisp.metadata.api.domain.MetaDataPackage" table="metadatapackagetable">
@@ -12,7 +10,11 @@
         <generator class="native"/>
     </id>
 
-        &identifiableProperties;
+        <property name="uid" />
+
+        <property name="created" />
+
+        <property name="lastUpdated" column="lastupdated" />
 
         <property name="name" type="text"/>
 
@@ -22,9 +24,17 @@
 
         <property name="url" type="text" />
 
+        <property name="status" length="50" column="status">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.hisp.metadata.api.domain.PackageStatus</param>
+                <param name="useNamed">true</param>
+                <param name="type">12</param>
+            </type>
+        </property>
+
         <component name="license" class="org.hisp.metadata.api.domain.License">
-            <property name="name" type="text" />
-            <property name="url" type="text" />
+            <property name="licenseName" column="licensename" type="text" />
+            <property name="licenseUrl" column="licenseurl" type="text" />
         </component>
 
         <set name="tags" table="package_tags" fetch="select" lazy="false">

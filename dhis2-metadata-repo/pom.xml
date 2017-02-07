@@ -1,43 +1,53 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.hisp</groupId>
-	<artifactId>dhis2-metadata-repo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
-
-	<name>DHIS 2 MetaData Repository</name>
-	<description></description>
+	<artifactId>metadatarepo</artifactId>
+	<version>0.9.6</version>
+	<name>MetaData Repository for DHIS 2</name>
+	<packaging>war</packaging>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<version>1.4.3.RELEASE</version>
+		<relativePath/>
 	</parent>
 
 	<dependencies>
+		<!-- Spring -->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<artifactId>spring-boot-configuration-processor</artifactId>
 		</dependency>
+
+
 		<!-- third party -->
 
 		<dependency>
@@ -76,6 +86,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 		</dependency>
+
 
 		<!-- Hibernate -->
 
@@ -177,7 +188,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>dhis-metadata-repo</finalName>
+		<finalName>dhis-metadatarepo</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -195,7 +206,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.5.0</version>
 				<configuration>
-					<mainClass>org.hisp.appstore.Configuration.Dhis2AppStore</mainClass>
+					<mainClass>org.hisp.metadata.configuration.Dhis2MetaDataRepositoryApplication</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -209,5 +220,4 @@
 		<hibernate.version>5.1.0.Final</hibernate.version>
 		<jackson.version>2.7.3</jackson.version>
 	</properties>
-
 </project>

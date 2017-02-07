@@ -6,10 +6,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @Configuration
-@ComponentScan ( basePackages = { "org.hisp.metadata","com.auth0.spring.security.mvc" } )
+@ComponentScan ( basePackages = { "org.hisp.metadata", "com.auth0.spring.security.mvc" })
 @PropertySource( "classpath:application.properties" )
 @ImportResource( "classpath:/META-INF/beans.xml" )
 public class Dhis2MetaDataRepositoryApplication

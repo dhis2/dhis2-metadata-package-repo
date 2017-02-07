@@ -1,18 +1,27 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"
-        [<!ENTITY identifiableProperties SYSTEM "classpath:/identifiableproperties.hbm">]
-        >
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="org.hisp.metadata.api.domain">
-    <class name="org.hisp.metadata.api.domain.PackageVersion" table="metadatapackagetable">
+    <class name="org.hisp.metadata.api.domain.PackageVersion" table="packageversiontable">
 
-        <id name="id" column="metadatapackageid">
+        <id name="id" column="versionid">
             <generator class="native"/>
         </id>
 
-        &identifiableProperties;
+        <property name="uid" />
+
+        <property name="created" />
+
+        <property name="lastUpdated" column="lastupdated"/>
+
+        <property name="version" type="text" />
+
+        <property name="versionUrl" type="text" column="versionurl"/>
+
+        <many-to-one name="metaDataPackage" class="org.hisp.metadata.api.domain.MetaDataPackage" column="metadatapackageid"
+                     foreign-key="fk_metadatapackage_verionid" />
 
     </class>
 </hibernate-mapping>

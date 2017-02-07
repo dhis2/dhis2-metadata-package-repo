@@ -5,27 +5,27 @@ package org.hisp.metadata.api.domain;
  */
 public class License extends BaseIdentifiableObject
 {
-    private String name;
+    private String licenseName;
 
-    private String url;
+    private String licenseUrl;
 
-    public String getName()
+    public String getLicenseName()
     {
-        return name;
+        return licenseName;
     }
 
-    public void setName( String name )
+    public void setLicenseName( String licenseName )
     {
-        this.name = name;
+        this.licenseName = licenseName;
     }
 
-    public String getUrl()
+    public String getLicenseUrl()
     {
-        return url;
+        return licenseUrl;
     }
 
-    public void setUrl( String url )
+    public void setLicenseUrl( String licenseUrl )
     {
-        this.url = url;
+        this.licenseUrl = licenseUrl;
     }
 }

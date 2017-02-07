@@ -4,14 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hisp.metadata.utils.CodeUtils;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 
 /**
  * Created by zubair on 03.02.17.
  */
+
+@Entity
 public class BaseIdentifiableObject
         implements IdentifiableObject
 {
+    @Id
+    @GeneratedValue( strategy = GenerationType.AUTO )
     protected int id;
 
     protected String uid;

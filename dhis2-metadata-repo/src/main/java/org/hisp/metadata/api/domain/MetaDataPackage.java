@@ -1,5 +1,6 @@
 package org.hisp.metadata.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -20,6 +21,8 @@ public class MetaDataPackage extends BaseIdentifiableObject
     private String url;
 
     private License license;
+
+    private PackageStatus status;
 
     private Set<String> tags = Sets.newHashSet();
 
@@ -106,8 +109,29 @@ public class MetaDataPackage extends BaseIdentifiableObject
         return versions;
     }
 
-    public void setVersions( Set<PackageVersion> versions )
+    public PackageStatus getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus( PackageStatus status )
+    {
+        this.status = status;
+    }
+
+    public void setVersions(Set<PackageVersion> versions )
     {
         this.versions = versions;
+    }
+
+    @Override
+    public String toString()
+    {
+        return MoreObjects.toStringHelper( this )
+                .add( "uid", uid )
+                .add( "name", this.name )
+                .add( "description", this.description )
+                .add( "status", this.status )
+                .toString();
     }
 }
