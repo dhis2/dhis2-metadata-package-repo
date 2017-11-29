@@ -22,9 +22,7 @@
 
         <property name="description" type="text" />
 
-        <property name="url" type="text" />
-
-        <many-to-one name="owner" lazy="false" class="org.hisp.metadata.api.domain.User" column="userid" foreign-key="fk_package_ownerid" />
+        <property name="owner" />
 
         <property name="status" length="50" column="status">
             <type name="org.hibernate.type.EnumType">

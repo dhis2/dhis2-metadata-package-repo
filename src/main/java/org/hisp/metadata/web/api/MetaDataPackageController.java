@@ -5,11 +5,10 @@ import org.apache.commons.logging.LogFactory;
 import org.hisp.metadata.api.domain.MetaDataPackage;
 import org.hisp.metadata.api.domain.PackageStatus;
 import org.hisp.metadata.api.domain.PackageVersion;
-import org.hisp.metadata.api.domain.User;
+import org.hisp.metadata.api.services.CurrentUserService;
 import org.hisp.metadata.api.services.MetaDataPackageService;
 import org.hisp.metadata.api.services.PackageVersionService;
 import org.hisp.metadata.api.services.RenderService;
-import org.hisp.metadata.api.services.UserService;
 import org.hisp.metadata.utils.WebMessageException;
 import org.hisp.metadata.utils.WebMessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class MetaDataPackageController
     private PackageVersionService packageVersionService;
 
     @Autowired
-    private UserService userService;
+    private CurrentUserService currentUserService;
 
     @Autowired
     private RenderService renderService;
@@ -70,8 +69,6 @@ public class MetaDataPackageController
     public void getPackage( @PathVariable( value = "uid" ) String packageUid,
                         HttpServletRequest request, HttpServletResponse response ) throws IOException, WebMessageException
     {
-        Set<String> userAuths = userService.getCurrentUser().getAuths();
-
         MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
 
         if ( metaDataPackage == null )
@@ -79,10 +76,12 @@ public class MetaDataPackageController
             throw new WebMessageException( WebMessageUtils.notFound( NOT_FOUND + packageUid ) );
         }
 
-        if ( !PackageStatus.APPROVED.equals( metaDataPackage.getStatus()) && !userAuths.contains( "ROLE_MANAGER" ))
+        if ( !PackageStatus.APPROVED.equals( metaDataPackage.getStatus()) )
         {
-            throw new WebMessageException( WebMessageUtils.forbidden( "Access denied for Package with id " + packageUid ) );
+            decideAccess( metaDataPackage );
         }
+
+        response.setContentType( "application/json" );
 
         renderService.toJson( response.getOutputStream(), metaDataPackage );
     }
@@ -94,9 +93,8 @@ public class MetaDataPackageController
     @PreAuthorize( "isAuthenticated()" )
     @RequestMapping( method = RequestMethod.POST )
     public void uploadPackage( @RequestPart( name = "file" ) MultipartFile file,
-                           @RequestPart( name = "package" ) MetaDataPackage metaDataPackage,
-                           HttpServletResponse response, HttpServletRequest request )
-            throws IOException, WebMessageException
+                               @RequestPart( name = "package" ) MetaDataPackage metaDataPackage, HttpServletResponse response, HttpServletRequest request )
+                               throws IOException, WebMessageException
     {
         metaDataPackageService.uploadPackage( metaDataPackage );
 
@@ -106,9 +104,8 @@ public class MetaDataPackageController
     @PreAuthorize( "isAuthenticated()" )
     @RequestMapping ( value = "/{uid}/version", method = RequestMethod.POST )
     public void addVersionToPackage( @RequestPart( name = "file" ) MultipartFile file,
-                                 @RequestPart( name = "version" ) PackageVersion version,
-                                 @RequestPart( "uid" ) String packageUid,
-                                 HttpServletResponse response, HttpServletRequest request )
+                                     @RequestPart( name = "version" ) PackageVersion version, @RequestPart( "uid" ) String packageUid,
+                                     HttpServletResponse response, HttpServletRequest request )
             throws IOException, WebMessageException
     {
         MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
@@ -128,8 +125,8 @@ public class MetaDataPackageController
     @PreAuthorize( "hasRole('ROLE_MANAGER')" )
     @RequestMapping ( value = "/{uid}/approval", method = RequestMethod.POST )
     public void approvePackage( @PathVariable( "uid" ) String packageUid,
-                            @RequestParam( name = "status" ) PackageStatus status,
-                            HttpServletResponse response, HttpServletRequest request )
+                                @RequestParam( name = "status" ) PackageStatus status,
+                                HttpServletResponse response, HttpServletRequest request )
             throws IOException, WebMessageException
     {
         MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
@@ -193,9 +190,7 @@ public class MetaDataPackageController
 
     private void decideAccess( MetaDataPackage metaDataPackage ) throws WebMessageException
     {
-        User currentUser = userService.getCurrentUser();
-
-        if ( !currentUser.equals( metaDataPackage.getOwner() ) )
+        if ( !currentUserService.getCurrentUserId().equals( metaDataPackage.getOwner() ) && !currentUserService.isManager() )
         {
             throw new WebMessageException( WebMessageUtils.denied( "Access denied" ) );
         }

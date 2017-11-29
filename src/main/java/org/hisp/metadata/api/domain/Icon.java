@@ -1,5 +1,7 @@
 package org.hisp.metadata.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by zubair on 03.02.17.
  */
@@ -9,6 +11,7 @@ public class Icon
 
     private String url;
 
+    @JsonProperty
     public String getIconId()
     {
         return iconId;
@@ -19,6 +22,7 @@ public class Icon
         this.iconId = iconId;
     }
 
+    @JsonProperty
     public String getUrl()
     {
         return url;

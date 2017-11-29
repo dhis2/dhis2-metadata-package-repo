@@ -41,7 +41,6 @@
             <list>
                 <value>hibernate/MetaDataPackage.hbm.xml</value>
                 <value>hibernate/PackageVersion.hbm.xml</value>
-                <value>hibernate/User.hbm.xml</value>
             </list>
         </property>
     </bean>
@@ -64,8 +63,10 @@
         <constructor-arg name="awsCredentials" ref="awsCredentialProvider"/>
     </bean>
 
-    <bean id="org.hisp.appstore.api.FileStorageService" class="org.hisp.metadata.services.AmazonS3FileStorageService">
+    <bean id="org.hisp.metadata.api.services.FileStorageService" class="org.hisp.metadata.services.AmazonS3FileStorageService">
         <property name="amazonS3Client" ref="amazonS3Client"/>
     </bean>
+
+    <bean id="org.hisp.metadata.api.services.CurrentUserService" class="org.hisp.metadata.services.DefaultCurrentUserService"/>
 
 </beans>

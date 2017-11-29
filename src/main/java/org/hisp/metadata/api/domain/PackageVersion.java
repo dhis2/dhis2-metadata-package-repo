@@ -1,5 +1,7 @@
 package org.hisp.metadata.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
 import javax.persistence.Entity;
@@ -19,6 +21,7 @@ public class PackageVersion extends BaseIdentifiableObject
     {
     }
 
+    @JsonProperty
     public String getVersionUrl()
     {
         return versionUrl;
@@ -29,6 +32,7 @@ public class PackageVersion extends BaseIdentifiableObject
         this.versionUrl = versionUrl;
     }
 
+    @JsonProperty
     public String getVersion()
     {
         return version;
@@ -39,6 +43,7 @@ public class PackageVersion extends BaseIdentifiableObject
         this.version = version;
     }
 
+    @JsonIgnore
     public MetaDataPackage getMetaDataPackage()
     {
         return metaDataPackage;

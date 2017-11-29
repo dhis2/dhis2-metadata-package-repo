@@ -1,5 +1,6 @@
 package org.hisp.metadata.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -18,13 +19,11 @@ public class MetaDataPackage extends BaseIdentifiableObject
 
     private String description;
 
-    private String url;
-
     private License license;
 
     private PackageStatus status;
 
-    private User owner;
+    private String owner;
 
     private Set<String> tags = Sets.newHashSet();
 
@@ -36,6 +35,7 @@ public class MetaDataPackage extends BaseIdentifiableObject
         {
     }
 
+    @JsonProperty
     public String getName()
     {
         return name;
@@ -46,6 +46,7 @@ public class MetaDataPackage extends BaseIdentifiableObject
         this.name = name;
     }
 
+    @JsonProperty
     public String getOrganization()
     {
         return organization;
@@ -56,6 +57,7 @@ public class MetaDataPackage extends BaseIdentifiableObject
         this.organization = organization;
     }
 
+    @JsonProperty
     public String getDescription()
     {
         return description;
@@ -66,16 +68,7 @@ public class MetaDataPackage extends BaseIdentifiableObject
         this.description = description;
     }
 
-    public String getUrl()
-    {
-        return url;
-    }
-
-    public void setUrl( String url )
-    {
-        this.url = url;
-    }
-
+    @JsonProperty
     public Set<Icon> getIcons()
     {
         return icons;
@@ -86,6 +79,7 @@ public class MetaDataPackage extends BaseIdentifiableObject
         this.icons = icons;
     }
 
+    @JsonProperty
     public License getLicense()
     {
         return license;
@@ -96,6 +90,7 @@ public class MetaDataPackage extends BaseIdentifiableObject
         this.license = license;
     }
 
+    @JsonProperty
     public Set<String> getTags()
     {
         return tags;
@@ -106,11 +101,13 @@ public class MetaDataPackage extends BaseIdentifiableObject
         this.tags = tags;
     }
 
+    @JsonProperty
     public Set<PackageVersion> getVersions()
     {
         return versions;
     }
 
+    @JsonProperty
     public PackageStatus getStatus()
     {
         return status;
@@ -126,12 +123,13 @@ public class MetaDataPackage extends BaseIdentifiableObject
         this.versions = versions;
     }
 
-    public User getOwner()
+    @JsonProperty
+    public String getOwner()
     {
         return owner;
     }
 
-    public void setOwner( User owner )
+    public void setOwner( String owner )
     {
         this.owner = owner;
     }
@@ -144,6 +142,8 @@ public class MetaDataPackage extends BaseIdentifiableObject
                 .add( "name", this.name )
                 .add( "description", this.description )
                 .add( "status", this.status )
+                .add( "owner", this.owner )
+                .add( "organization", this.organization )
                 .toString();
     }
 }
