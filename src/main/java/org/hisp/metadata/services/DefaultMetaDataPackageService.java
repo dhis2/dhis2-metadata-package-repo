@@ -1,5 +1,7 @@
 package org.hisp.metadata.services;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hisp.metadata.api.domain.MetaDataPackage;
 import org.hisp.metadata.api.domain.PackageStatus;
 import org.hisp.metadata.api.domain.PackageVersion;
@@ -21,6 +23,8 @@ import java.util.stream.StreamSupport;
 @Transactional
 public class DefaultMetaDataPackageService implements MetaDataPackageService
 {
+    private static final Log log = LogFactory.getLog( DefaultMetaDataPackageService.class );
+
     // -------------------------------------------------------------------------
     // Dependencies
     // -------------------------------------------------------------------------
@@ -79,7 +83,10 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
     @Override
     public void uploadPackage( MetaDataPackage metaDataPackage )
     {
+        metaDataPackage.setAutoFields();
+        MetaDataPackage metaData = repository.save( metaDataPackage );
 
+        log.info( String.format( "MetaData Package uploaded with id: %s", metaData.getUid() ) );
     }
 
     @Override

@@ -90,15 +90,15 @@ public class MetaDataPackageController
     // POST
     // -------------------------------------------------------------------------
 
-    @PreAuthorize( "isAuthenticated()" )
     @RequestMapping( method = RequestMethod.POST )
-    public void uploadPackage( @RequestPart( name = "file" ) MultipartFile file,
-                               @RequestPart( name = "package" ) MetaDataPackage metaDataPackage, HttpServletResponse response, HttpServletRequest request )
+    public void uploadPackage( HttpServletResponse response, HttpServletRequest request )
                                throws IOException, WebMessageException
     {
-        metaDataPackageService.uploadPackage( metaDataPackage );
+        MetaDataPackage metaData = renderService.fromJson( request.getInputStream(), MetaDataPackage.class );
 
-        renderService.toJson( response.getOutputStream(), "Package Uploaded");
+        metaDataPackageService.uploadPackage( metaData );
+
+        renderService.renderCreated( response, request, "Package Uploaded");
     }
 
     @PreAuthorize( "isAuthenticated()" )
