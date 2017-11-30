@@ -13,6 +13,7 @@ import org.hisp.metadata.api.domain.FileUploadStatus;
 import org.hisp.metadata.api.services.FileStorageService;
 import org.hisp.metadata.utils.WebMessageException;
 import org.hisp.metadata.utils.WebMessageUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,7 @@ import java.util.UUID;
 /**
  * Created by zubair on 28.12.16.
  */
+
 @Service
 @Transactional
 public class AmazonS3FileStorageService implements FileStorageService
@@ -35,12 +37,8 @@ public class AmazonS3FileStorageService implements FileStorageService
     // Dependencies
     // -------------------------------------------------------------------------
 
+    @Autowired
     private AmazonS3Client amazonS3Client;
-
-    public void setAmazonS3Client( AmazonS3Client amazonS3Client )
-    {
-        this.amazonS3Client = amazonS3Client;
-    }
 
     // -------------------------------------------------------------------------
     // Implementation methods

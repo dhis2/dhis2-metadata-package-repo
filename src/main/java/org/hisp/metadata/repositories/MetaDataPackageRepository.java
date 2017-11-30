@@ -14,5 +14,5 @@ public interface MetaDataPackageRepository
 {
     MetaDataPackage getPackageByUid( String uid );
 
-    List<MetaDataPackage> getPackagesByStatus(PackageStatus status );
+    List<MetaDataPackage> getPackagesByStatus( PackageStatus status );
 }

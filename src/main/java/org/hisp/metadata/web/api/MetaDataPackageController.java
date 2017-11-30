@@ -58,7 +58,6 @@ public class MetaDataPackageController
         renderService.toJson( response.getOutputStream(), metaDataPackageService.getPackagesByStatus( PackageStatus.PENDING ));
     }
 
-    @PreAuthorize( "hasRole('ROLE_MANAGER')" )
     @RequestMapping( value = "/all", method = RequestMethod.GET )
     public void getAllPackages( HttpServletRequest request, HttpServletResponse response ) throws IOException
     {
@@ -101,7 +100,6 @@ public class MetaDataPackageController
         renderService.renderCreated( response, request, "Package Uploaded");
     }
 
-    @PreAuthorize( "isAuthenticated()" )
     @RequestMapping ( value = "/{uid}/version", method = RequestMethod.POST )
     public void addVersionToPackage( @RequestPart( name = "file" ) MultipartFile file,
                                      @RequestPart( name = "version" ) PackageVersion version, @RequestPart( "uid" ) String packageUid,

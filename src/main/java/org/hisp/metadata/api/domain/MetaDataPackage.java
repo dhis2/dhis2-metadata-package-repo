@@ -32,7 +32,8 @@ public class MetaDataPackage extends BaseIdentifiableObject
     private Set<PackageVersion> versions = Sets.newHashSet();
 
     public MetaDataPackage()
-        {
+    {
+        setAutoFields();
     }
 
     @JsonProperty

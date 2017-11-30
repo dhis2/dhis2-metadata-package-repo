@@ -1,12 +1,17 @@
 package org.hisp.metadata.services;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hisp.metadata.api.domain.FileUploadStatus;
 import org.hisp.metadata.api.domain.MetaDataPackage;
 import org.hisp.metadata.api.domain.PackageStatus;
 import org.hisp.metadata.api.domain.PackageVersion;
+import org.hisp.metadata.api.services.FileStorageService;
 import org.hisp.metadata.api.services.MetaDataPackageService;
 import org.hisp.metadata.repositories.MetaDataPackageRepository;
+import org.hisp.metadata.utils.WebMessageException;
+import org.hisp.metadata.utils.WebMessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +24,7 @@ import java.util.stream.StreamSupport;
 /**
  * Created by zubair on 06.02.17.
  */
+
 @Service
 @Transactional
 public class DefaultMetaDataPackageService implements MetaDataPackageService
@@ -31,6 +37,9 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
 
     @Autowired
     private MetaDataPackageRepository repository;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     // -------------------------------------------------------------------------
     // Implementation methods
@@ -69,21 +78,38 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
     }
 
     @Override
-    public void addVersionToPackage( MetaDataPackage metaDataPackage, PackageVersion version, MultipartFile file )
+    public void addVersionToPackage( MetaDataPackage metaDataPackage, PackageVersion version, MultipartFile file ) throws WebMessageException
     {
+        FileUploadStatus status = fileStorageService.uploadFile( file );
 
+        if ( !status.isUploaded() )
+        {
+            throw new WebMessageException( WebMessageUtils.conflict( "Version uploading failed" ) );
+        }
+
+        version.setVersionUrl( status.getDownloadUrl() );
+        metaDataPackage.getVersions().add( version );
+
+        repository.save( metaDataPackage );
+
+        log.info( String.format( "Version with id: %s added to package %s", version.getUid(),metaDataPackage.getName() ) );
     }
 
     @Override
     public void removeVersionFromPackage( MetaDataPackage metaDataPackage, PackageVersion version )
     {
+        String resourcekey = getKeyFromResourceUrl( version.getVersionUrl() );
 
+        fileStorageService.deleteFile( resourcekey );
+
+        metaDataPackage.getVersions().remove( version );
+
+        repository.save( metaDataPackage );
     }
 
     @Override
     public void uploadPackage( MetaDataPackage metaDataPackage )
     {
-        metaDataPackage.setAutoFields();
         MetaDataPackage metaData = repository.save( metaDataPackage );
 
         log.info( String.format( "MetaData Package uploaded with id: %s", metaData.getUid() ) );
@@ -99,7 +125,7 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
     public List<MetaDataPackage> getAll()
     {
         List<MetaDataPackage> metaDataPackages = StreamSupport.stream( repository.findAll().spliterator(), false )
-                .collect( Collectors.toList() );
+            .collect( Collectors.toList() );
 
         return metaDataPackages;
     }
@@ -114,5 +140,14 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
     public List<MetaDataPackage> getPackagesByStatus( PackageStatus status )
     {
         return repository.getPackagesByStatus( status );
+    }
+
+    // -------------------------------------------------------------------------
+    // Supportive methods
+    // -------------------------------------------------------------------------
+
+    private String getKeyFromResourceUrl( String resourceUrl )
+    {
+        return StringUtils.substringAfterLast( resourceUrl, "/").trim();
     }
 }

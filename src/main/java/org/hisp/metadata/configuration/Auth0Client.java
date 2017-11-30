@@ -5,9 +5,9 @@ import com.auth0.authentication.AuthenticationAPIClient;
 import com.auth0.authentication.result.UserProfile;
 import com.auth0.request.Request;
 import com.auth0.spring.security.api.Auth0JWTToken;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class Auth0Client
 {
     private final String clientid;

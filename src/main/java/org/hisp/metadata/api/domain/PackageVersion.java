@@ -19,6 +19,7 @@ public class PackageVersion extends BaseIdentifiableObject
 
     public PackageVersion()
     {
+        setAutoFields();
     }
 
     @JsonProperty

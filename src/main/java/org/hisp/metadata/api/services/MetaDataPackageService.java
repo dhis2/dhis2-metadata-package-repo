@@ -3,6 +3,7 @@ package org.hisp.metadata.api.services;
 import org.hisp.metadata.api.domain.MetaDataPackage;
 import org.hisp.metadata.api.domain.PackageStatus;
 import org.hisp.metadata.api.domain.PackageVersion;
+import org.hisp.metadata.utils.WebMessageException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface MetaDataPackageService
 
     void setPackageApproval( MetaDataPackage metaDataPackage, PackageStatus status );
 
-    void addVersionToPackage( MetaDataPackage metaDataPackage, PackageVersion version, MultipartFile file);
+    void addVersionToPackage( MetaDataPackage metaDataPackage, PackageVersion version, MultipartFile file ) throws WebMessageException;
 
     void removeVersionFromPackage( MetaDataPackage metaDataPackage, PackageVersion version );
 

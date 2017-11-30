@@ -9,6 +9,17 @@ public class License extends BaseIdentifiableObject
 
     private String licenseUrl;
 
+    public License()
+    {
+        setAutoFields();
+    }
+
+    public License(String licenseName, String licenseUrl )
+    {
+        this.licenseName = licenseName;
+        this.licenseUrl = licenseUrl;
+    }
+
     public String getLicenseName()
     {
         return licenseName;
