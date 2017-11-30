@@ -31,7 +31,11 @@ public class AmazonS3FileStorageService implements FileStorageService
 {
     private static final Log log = LogFactory.getLog( AmazonS3FileStorageService.class );
 
-    private static final String BUCKET_NAME = "metadatarepo.dhis2.org";
+    private static final String AMAZON_URL = "s3.amazonaws.com";
+    private static final String BASE_BUCKET = "dhis2-metadatarepo";
+    private static final String BUCKET_NAME = "metadatarepo-dhis2-org";
+    private static final String BUCKET_URL = BASE_BUCKET + "/" + BUCKET_NAME;
+    private static final String FILE_EXTENSION = ".json";
 
     // -------------------------------------------------------------------------
     // Dependencies
@@ -49,7 +53,7 @@ public class AmazonS3FileStorageService implements FileStorageService
     {
         FileUploadStatus status = new FileUploadStatus();
 
-        String resourceKey = UUID.randomUUID().toString();
+        String resourceKey = UUID.randomUUID().toString() + FILE_EXTENSION ;
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength( Long.valueOf( file.getSize() ));
@@ -58,13 +62,13 @@ public class AmazonS3FileStorageService implements FileStorageService
 
         try
         {
-            request = new PutObjectRequest( BUCKET_NAME, resourceKey, file.getInputStream(), metadata );
+            request = new PutObjectRequest( BUCKET_URL, resourceKey, file.getInputStream(), metadata );
             request.setCannedAcl( CannedAccessControlList.PublicRead );
 
             amazonS3Client.putObject( request );
 
             status.setUploaded( true );
-            status.setDownloadUrl( amazonS3Client.getResourceUrl( BUCKET_NAME, resourceKey ) );
+            status.setDownloadUrl( getDownloadUrl( resourceKey ) );
         }
         catch ( AmazonServiceException ase )
         {
@@ -94,5 +98,10 @@ public class AmazonS3FileStorageService implements FileStorageService
     public void deleteFile( String key )
     {
         amazonS3Client.deleteObject( BUCKET_NAME, key );
+    }
+
+    private String getDownloadUrl( String resourceKey )
+    {
+        return "https://" + BASE_BUCKET + "." + AMAZON_URL + "/" + BUCKET_URL + "/" + resourceKey;
     }
 }

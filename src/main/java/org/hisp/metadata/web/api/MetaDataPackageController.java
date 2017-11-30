@@ -2,6 +2,7 @@ package org.hisp.metadata.web.api;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hisp.metadata.api.domain.FileUploadStatus;
 import org.hisp.metadata.api.domain.MetaDataPackage;
 import org.hisp.metadata.api.domain.PackageStatus;
 import org.hisp.metadata.api.domain.PackageVersion;
@@ -19,17 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Set;
 
 /**
  * Created by zubair on 06.02.17.
  */
 @RestController
-@RequestMapping( value = "/api/metadatapackages")
+@RequestMapping( value = "/api/metadataPackages")
 public class MetaDataPackageController
 {
-    private static Log log = LogFactory.getLog( MetaDataPackageController.class );
-
     private static final String NOT_FOUND = "No Package found with id: ";
 
     // -------------------------------------------------------------------------
@@ -55,15 +53,17 @@ public class MetaDataPackageController
     @RequestMapping( method = RequestMethod.GET )
     public void getApprovedPackages( HttpServletRequest request, HttpServletResponse response ) throws IOException
     {
-        renderService.toJson( response.getOutputStream(), metaDataPackageService.getPackagesByStatus( PackageStatus.PENDING ));
+        renderService.toJson( response.getOutputStream(), metaDataPackageService.getPackagesByStatus( PackageStatus.APPROVED ));
     }
 
+    @PreAuthorize( "hasRole('ROLE_MANAGER')" )
     @RequestMapping( value = "/all", method = RequestMethod.GET )
     public void getAllPackages( HttpServletRequest request, HttpServletResponse response ) throws IOException
     {
         renderService.toJson( response.getOutputStream(), metaDataPackageService.getAll() );
     }
 
+    @PreAuthorize( "isAuthenticated()" )
     @RequestMapping( value = "/{uid}", method = RequestMethod.GET )
     public void getPackage( @PathVariable( value = "uid" ) String packageUid,
                         HttpServletRequest request, HttpServletResponse response ) throws IOException, WebMessageException
@@ -89,22 +89,23 @@ public class MetaDataPackageController
     // POST
     // -------------------------------------------------------------------------
 
+    @PreAuthorize( "isAuthenticated()" )
     @RequestMapping( method = RequestMethod.POST )
-    public void uploadPackage( HttpServletResponse response, HttpServletRequest request )
+    public void uploadPackage( @RequestPart( name = "file" ) MultipartFile file,
+                               @RequestPart( name = "metadataPackage" ) MetaDataPackage metadataPackage ,HttpServletResponse response, HttpServletRequest request )
                                throws IOException, WebMessageException
     {
-        MetaDataPackage metaData = renderService.fromJson( request.getInputStream(), MetaDataPackage.class );
-
-        metaDataPackageService.uploadPackage( metaData );
+        metaDataPackageService.uploadPackage( metadataPackage, file );
 
         renderService.renderCreated( response, request, "Package Uploaded");
     }
 
+    @PreAuthorize( "isAuthenticated()" )
     @RequestMapping ( value = "/{uid}/version", method = RequestMethod.POST )
     public void addVersionToPackage( @RequestPart( name = "file" ) MultipartFile file,
                                      @RequestPart( name = "version" ) PackageVersion version, @RequestPart( "uid" ) String packageUid,
                                      HttpServletResponse response, HttpServletRequest request )
-            throws IOException, WebMessageException
+                                     throws IOException, WebMessageException
     {
         MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
 
@@ -147,7 +148,7 @@ public class MetaDataPackageController
     @RequestMapping ( value = "/{uid}", method = RequestMethod.DELETE )
     public void deletePackage( @PathVariable( "uid" ) String packageUid,
                            HttpServletResponse response, HttpServletRequest request )
-            throws IOException, WebMessageException
+                           throws IOException, WebMessageException
     {
         MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
 
@@ -168,7 +169,7 @@ public class MetaDataPackageController
     public void removeVersionFromPackage( @PathVariable( "uid" ) String packageUid,
                                       @PathVariable( "vuid" ) String versionUid,
                                       HttpServletResponse response, HttpServletRequest request )
-            throws IOException, WebMessageException
+                                      throws IOException, WebMessageException
     {
         MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
 

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -75,6 +76,8 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
         metaDataPackage.setStatus( status );
 
         repository.save( metaDataPackage );
+
+        log.info( String.format( "Status changed for metadata package: %s" + metaDataPackage.getName() ) );
     }
 
     @Override
@@ -105,20 +108,33 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
         metaDataPackage.getVersions().remove( version );
 
         repository.save( metaDataPackage );
+
+        log.info( String.format( "Version %s has been removed from metadata package %s", version.getVersion(), metaDataPackage.getName() ) );
     }
 
     @Override
-    public void uploadPackage( MetaDataPackage metaDataPackage )
+    public void uploadPackage( MetaDataPackage metaDataPackage, MultipartFile file ) throws WebMessageException
     {
+        FileUploadStatus status = fileStorageService.uploadFile(  file );
+
+        if ( !status.isUploaded() )
+        {
+            throw new WebMessageException( WebMessageUtils.conflict( "File uploading failed" ) );
+        }
+
+        metaDataPackage.getVersions().stream().forEach( v -> v.setVersionUrl( status.getDownloadUrl() ) );
+
         MetaDataPackage metaData = repository.save( metaDataPackage );
 
-        log.info( String.format( "MetaData Package uploaded with id: %s", metaData.getUid() ) );
+        log.info( String.format( "MetaData package uploaded with id: %s", metaData.getUid() ) );
     }
 
     @Override
     public void removePackage( MetaDataPackage metaDataPackage )
     {
         repository.delete( metaDataPackage );
+
+        log.info( String.format( "MetaData package: %s has been removed", metaDataPackage.getName() ) );
     }
 
     @Override
@@ -134,6 +150,8 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
     public void save(MetaDataPackage metaDataPackage)
     {
         repository.save( metaDataPackage );
+
+        log.info( String.format( "MetaData package saved with id: %s", metaDataPackage.getUid() ) );
     }
 
     @Override

@@ -29,7 +29,7 @@ public interface MetaDataPackageService
 
     void removeVersionFromPackage( MetaDataPackage metaDataPackage, PackageVersion version );
 
-    void uploadPackage( MetaDataPackage metaDataPackage );
+    void uploadPackage( MetaDataPackage metaDataPackage, MultipartFile file ) throws WebMessageException;
 
     void removePackage( MetaDataPackage metaDataPackage );
 
