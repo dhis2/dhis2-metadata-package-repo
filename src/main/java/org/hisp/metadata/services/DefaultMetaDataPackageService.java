@@ -7,6 +7,7 @@ import org.hisp.metadata.api.domain.FileUploadStatus;
 import org.hisp.metadata.api.domain.MetaDataPackage;
 import org.hisp.metadata.api.domain.PackageStatus;
 import org.hisp.metadata.api.domain.PackageVersion;
+import org.hisp.metadata.api.services.CurrentUserService;
 import org.hisp.metadata.api.services.FileStorageService;
 import org.hisp.metadata.api.services.MetaDataPackageService;
 import org.hisp.metadata.repositories.MetaDataPackageRepository;
@@ -41,6 +42,9 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private CurrentUserService currentUserService;
 
     // -------------------------------------------------------------------------
     // Implementation methods
@@ -121,6 +125,8 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
         {
             throw new WebMessageException( WebMessageUtils.conflict( "File uploading failed" ) );
         }
+
+        metaDataPackage.setOwner( currentUserService.getCurrentUserId() );
 
         metaDataPackage.getVersions().stream().forEach( v -> v.setVersionUrl( status.getDownloadUrl() ) );
 

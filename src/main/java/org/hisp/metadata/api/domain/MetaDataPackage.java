@@ -19,7 +19,7 @@ public class MetaDataPackage extends BaseIdentifiableObject
 
     private License license;
 
-    private PackageStatus status;
+    private PackageStatus status = PackageStatus.PENDING;
 
     private String owner;
 
