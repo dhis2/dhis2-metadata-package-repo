@@ -29,6 +29,8 @@ public class MetaDataPackage extends BaseIdentifiableObject
 
     private Set<PackageVersion> versions = Sets.newHashSet();
 
+    private Set<Resource> resources = Sets.newHashSet();
+
     public MetaDataPackage()
     {
         setAutoFields();
@@ -98,6 +100,17 @@ public class MetaDataPackage extends BaseIdentifiableObject
     public void setTags( Set<String> tags )
     {
         this.tags = tags;
+    }
+
+    @JsonProperty
+    public Set<Resource> getResources()
+    {
+        return resources;
+    }
+
+    public void setResources( Set<Resource> resources )
+    {
+        this.resources = resources;
     }
 
     @JsonProperty

@@ -3,10 +3,7 @@ package org.hisp.metadata.services;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hisp.metadata.api.domain.FileUploadStatus;
-import org.hisp.metadata.api.domain.MetaDataPackage;
-import org.hisp.metadata.api.domain.PackageStatus;
-import org.hisp.metadata.api.domain.PackageVersion;
+import org.hisp.metadata.api.domain.*;
 import org.hisp.metadata.api.services.CurrentUserService;
 import org.hisp.metadata.api.services.FileStorageService;
 import org.hisp.metadata.api.services.MetaDataPackageService;
@@ -99,7 +96,25 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
 
         repository.save( metaDataPackage );
 
-        log.info( String.format( "Version with id: %s added to package %s", version.getUid(),metaDataPackage.getName() ) );
+        log.info( String.format( "Version with id: %s added to package: %s", version.getUid(),metaDataPackage.getName() ) );
+    }
+
+    @Override
+    public void addResourceToPackage( MetaDataPackage metaDataPackage, Resource resource, MultipartFile file ) throws WebMessageException
+    {
+        FileUploadStatus status = fileStorageService.uploadFile( file );
+
+        if ( !status.isUploaded() )
+        {
+            throw new WebMessageException( WebMessageUtils.conflict( "Resource uploading failed" ) );
+        }
+
+        resource.setResourceUrl( status.getDownloadUrl() );
+        metaDataPackage.getResources().add( resource );
+
+        repository.save( metaDataPackage );
+
+        log.info( String.format( "Resource with id: %s add to package: %s", resource.getUid(), metaDataPackage.getName() ) );
     }
 
     @Override
@@ -113,7 +128,7 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
 
         repository.save( metaDataPackage );
 
-        log.info( String.format( "Version %s has been removed from metadata package %s", version.getVersion(), metaDataPackage.getName() ) );
+        log.info( String.format( "Version: %s has been removed from metadata package: %s", version.getVersion(), metaDataPackage.getName() ) );
     }
 
     @Override

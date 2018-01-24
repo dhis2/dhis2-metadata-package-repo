@@ -3,6 +3,7 @@ package org.hisp.metadata.web.api;
 import org.hisp.metadata.api.domain.MetaDataPackage;
 import org.hisp.metadata.api.domain.PackageStatus;
 import org.hisp.metadata.api.domain.PackageVersion;
+import org.hisp.metadata.api.domain.Resource;
 import org.hisp.metadata.api.services.CurrentUserService;
 import org.hisp.metadata.api.services.MetaDataPackageService;
 import org.hisp.metadata.api.services.PackageVersionService;
@@ -63,7 +64,7 @@ public class MetaDataPackageController
     @PreAuthorize( "isAuthenticated()" )
     @RequestMapping( value = "/{uid}", method = RequestMethod.GET )
     public void getPackage( @PathVariable( value = "uid" ) String packageUid,
-                        HttpServletRequest request, HttpServletResponse response ) throws IOException, WebMessageException
+        HttpServletRequest request, HttpServletResponse response ) throws IOException, WebMessageException
     {
         MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
 
@@ -104,18 +105,25 @@ public class MetaDataPackageController
                                      HttpServletResponse response, HttpServletRequest request )
                                      throws IOException, WebMessageException
     {
-        MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
-
-        if ( metaDataPackage == null )
-        {
-            throw new WebMessageException( WebMessageUtils.notFound( NOT_FOUND + packageUid ) );
-        }
-
-        decideAccess( metaDataPackage );
+        MetaDataPackage metaDataPackage = getMetaDataPackage( packageUid );
 
         metaDataPackageService.addVersionToPackage( metaDataPackage, version, file);
 
         renderService.renderCreated( response, request, "Package version added" );
+    }
+
+    @PreAuthorize( "isAuthenticated()" )
+    @RequestMapping ( value = "/{uid}/resource", method = RequestMethod.POST )
+    public void addResourceToPackage(@RequestPart( name = "file" ) MultipartFile file,
+                                     @RequestPart( name = "resource" ) Resource resource, @RequestPart( "uid" ) String packageUid,
+                                     HttpServletResponse response, HttpServletRequest request )
+                                     throws IOException, WebMessageException
+    {
+        MetaDataPackage metaDataPackage = getMetaDataPackage( packageUid );
+
+        metaDataPackageService.addResourceToPackage( metaDataPackage, resource, file );
+
+        renderService.renderCreated( response, request, "Package resource added" );
     }
 
     @PreAuthorize( "hasRole('ROLE_MANAGER')" )
@@ -123,14 +131,9 @@ public class MetaDataPackageController
     public void approvePackage( @PathVariable( "uid" ) String packageUid,
                                 @RequestParam( name = "status" ) PackageStatus status,
                                 HttpServletResponse response, HttpServletRequest request )
-            throws IOException, WebMessageException
+                                throws IOException, WebMessageException
     {
-        MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
-
-        if ( metaDataPackage == null )
-        {
-            throw new WebMessageException( WebMessageUtils.notFound( NOT_FOUND + packageUid ) );
-        }
+        MetaDataPackage metaDataPackage = getMetaDataPackage( packageUid );
 
         metaDataPackageService.setPackageApproval( metaDataPackage, status );
 
@@ -147,14 +150,7 @@ public class MetaDataPackageController
                            HttpServletResponse response, HttpServletRequest request )
                            throws IOException, WebMessageException
     {
-        MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
-
-        if ( metaDataPackage == null )
-        {
-            throw new WebMessageException( WebMessageUtils.notFound( NOT_FOUND + packageUid ) );
-        }
-
-        decideAccess( metaDataPackage );
+        MetaDataPackage metaDataPackage = getMetaDataPackage( packageUid );
 
         metaDataPackageService.delete( metaDataPackage );
 
@@ -190,5 +186,19 @@ public class MetaDataPackageController
         {
             throw new WebMessageException( WebMessageUtils.denied( "Access denied" ) );
         }
+    }
+
+    private MetaDataPackage getMetaDataPackage( String packageUid ) throws WebMessageException
+    {
+        MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
+
+        if ( metaDataPackage == null )
+        {
+            throw new WebMessageException( WebMessageUtils.notFound( NOT_FOUND + packageUid ) );
+        }
+
+        decideAccess( metaDataPackage );
+
+        return metaDataPackage;
     }
 }
