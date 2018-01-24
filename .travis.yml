@@ -1,5 +1,5 @@
 language: java
-sudo : false
+sudo: false
 jdk:
 - oraclejdk8
 addons:
@@ -12,8 +12,16 @@ cache:
   directories:
   - "$HOME/.m2"
 script:
-  -  mvn clean install -DskipTests=false 
+- mvn clean install -DskipTests=false
+after_success:
+- if ( [ "$TRAVIS_BRANCH" == "master" ] || [ ! -z "$TRAVIS_TAG" ] ) && [ "$TRAVIS_REPO_SLUG"
+  == "dhis2/dhis2-metadata-package-repo" ]  &&  [ "$TRAVIS_PULL_REQUEST" == "false"
+  ] ; then mvn clean deploy --settings deploy/settings.xml && exit 0; fi
 branches:
   only:
   - master
   - "/^2\\.[0-9]{1,}/"
+env:
+  global:
+  - secure: geaK6nENY/onxh/08PRmq7IBKaSh4IdiR9mhKvFcEWilx/I4lCtBrtoXwf0bs06WGE4u3cZ7Hdk1NwpXLrvm5yJJubQ54pCJii1X/rgm5uiTvUTYLbL/NbxcIj3CcTwtc9NcEwMlQgV0w6b0NbjN570auuY50dv0pBKFYbsHYxJuJ5OQNTxBx+KjoWUVBTPMgWNd7ruaj6vXQRxMOG75HetAqKu51763mHKzpSZSEpMZCELMzvy5wTheFldFcN+ZZ7WevmbhpNXdukBJcvzy63lffW1g0Sv2M4hsGvX1qdoKIJbcIkL4DoZ/jM5TYXe5DA8nMVmbZv0nc11ZYQhHxBxhw70VyuBNHog52dQ6YhfLWGn7TEU21DxPkrHFodTohi3SNDCqmj2Bgoe36htSaC0jQIwu7eTexNc8hvD122D5bNJxmv6kujj3uDjTlXHW/F4DzGy9H1mV1CTSeXZjxgE5+wwY1cyXg1SN+YIcbRhYl4LfIhu0nDS2QkL/nvtAmGSqZCNcOod5epEvayobBAjts8drUO7IEiVw5jhzsLXNrX6J17QcQzt5G4+oxza8pEVQGTru9bcOQTQL274kwSJV/KoOzVoERjULBZ7Bme/2GVhu7cgROC4Py7d5kzACDfKjpAy81uQeYDzvvGut4QZtks3r+L7BNldlY9zzAII=
+  - secure: FE7osM16UbXDEzIOA0sKc8UCBYAheSLhIC6reNzF4n/EO8rRnNlFGuAtnUT0/VINKIYj2tOjZAl+ZoKbDvJswdM6679t9MoOeJcB9TubKOuy/pJsVzrppbKnFQjPw3unTLgcXyiz5eIDWelYyto1YGxJZpfietQr2ML7m7B8dbfdcTRHbu/7U5ZJqv3p7RMNhSvgMURtDOOlYzPOFrq/FooueU4JPblmo2/YXKvEMEPZhPPxogZrgiQQAHB09b/abCaoftqWEWzIzoY1GaQDng9cKtAOy78nb764V5Lkx/i+GJdBzfjlqHUsD8IQJsgSTntDhyP6r13T1D4Q1k7wdgYYPSZafcO34+hRGaNA2BbToqirEcTNLJjTLliBB4AiVXkeuBhfHPg8W5K+0AzzZKGc0JnVreuOnHG9IbPN9LKTt0TCwKVkpeE+TJle2dLVueVCHPz7yKYpv+/F/PrkrjYtLml0+XUAJq1sFeWyp0N3FfsCSwY7KV9mGEKiv+CaMl4+L+DO3etTiI0KzZXRvexZQew0GCF7mIm89WJ0IQTLpFSQkRFWoq3AKdMiaKJyDrjLZR5JycczyH3qBs9ONc6CtPkplvqMm1duOgm8CFQgPpqtPs3orRd51odlXH26ltToMcev4mj4yiHBUV2X2EGdOfoRLkgAorREd0ZCkfU=
