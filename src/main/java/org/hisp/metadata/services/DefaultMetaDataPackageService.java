@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -78,7 +77,7 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
 
         repository.save( metaDataPackage );
 
-        log.info( String.format( "Status changed for metadata package: %s" + metaDataPackage.getName() ) );
+        log.info( String.format( "Status changed for metadata package: %s", metaDataPackage.getName() ) );
     }
 
     @Override
@@ -132,6 +131,20 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
     }
 
     @Override
+    public void removeResourceFromPackage( MetaDataPackage metaDataPackage, Resource resource )
+    {
+        String resourcekey = getKeyFromResourceUrl( resource.getResourceUrl() );
+
+        fileStorageService.deleteFile( resourcekey );
+
+        metaDataPackage.getResources().remove( resource );
+
+        repository.save( metaDataPackage );
+
+        log.info( String.format( "Resource: %s has been removed from metadata package: %s", resource.getName(), metaDataPackage.getName() ) );
+    }
+
+    @Override
     public void uploadPackage( MetaDataPackage metaDataPackage, MultipartFile file ) throws WebMessageException
     {
         FileUploadStatus status = fileStorageService.uploadFile(  file );
@@ -161,10 +174,8 @@ public class DefaultMetaDataPackageService implements MetaDataPackageService
     @Override
     public List<MetaDataPackage> getAll()
     {
-        List<MetaDataPackage> metaDataPackages = StreamSupport.stream( repository.findAll().spliterator(), false )
+        return StreamSupport.stream( repository.findAll().spliterator(), false )
             .collect( Collectors.toList() );
-
-        return metaDataPackages;
     }
 
     @Override

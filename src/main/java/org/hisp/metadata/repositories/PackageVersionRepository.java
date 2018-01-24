@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
  * Created by zubair on 07.02.17.
  */
 public interface PackageVersionRepository
-        extends CrudRepository<PackageVersion, Integer>
+    extends CrudRepository<PackageVersion, Integer>
 {
     PackageVersion getVersionByUid( String uid );
 }

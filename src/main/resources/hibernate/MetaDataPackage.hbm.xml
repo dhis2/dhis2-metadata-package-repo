@@ -47,5 +47,10 @@
             <one-to-many class="org.hisp.metadata.api.domain.PackageVersion" />
         </set>
 
+        <set name="resources" cascade="all" lazy="false">
+            <key column="metadatapackageid" />
+            <one-to-many class="org.hisp.metadata.api.domain.Resource" />
+        </set>
+
     </class>
 </hibernate-mapping>

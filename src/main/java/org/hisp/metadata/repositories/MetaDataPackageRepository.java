@@ -10,7 +10,7 @@ import java.util.List;
  * Created by zubair on 06.02.17.
  */
 public interface MetaDataPackageRepository
-        extends CrudRepository<MetaDataPackage, Integer>
+    extends CrudRepository<MetaDataPackage, Integer>
 {
     MetaDataPackage getPackageByUid( String uid );
 

@@ -4,10 +4,7 @@ import org.hisp.metadata.api.domain.MetaDataPackage;
 import org.hisp.metadata.api.domain.PackageStatus;
 import org.hisp.metadata.api.domain.PackageVersion;
 import org.hisp.metadata.api.domain.Resource;
-import org.hisp.metadata.api.services.CurrentUserService;
-import org.hisp.metadata.api.services.MetaDataPackageService;
-import org.hisp.metadata.api.services.PackageVersionService;
-import org.hisp.metadata.api.services.RenderService;
+import org.hisp.metadata.api.services.*;
 import org.hisp.metadata.utils.WebMessageException;
 import org.hisp.metadata.utils.WebMessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +34,9 @@ public class MetaDataPackageController
 
     @Autowired
     private PackageVersionService packageVersionService;
+
+    @Autowired
+    private ResourceService resourceService;
 
     @Autowired
     private CurrentUserService currentUserService;
@@ -101,7 +101,7 @@ public class MetaDataPackageController
     @PreAuthorize( "isAuthenticated()" )
     @RequestMapping ( value = "/{uid}/version", method = RequestMethod.POST )
     public void addVersionToPackage( @RequestPart( name = "file" ) MultipartFile file,
-                                     @RequestPart( name = "version" ) PackageVersion version, @RequestPart( "uid" ) String packageUid,
+                                     @RequestPart( name = "version" ) PackageVersion version, @PathVariable( "uid" ) String packageUid,
                                      HttpServletResponse response, HttpServletRequest request )
                                      throws IOException, WebMessageException
     {
@@ -115,7 +115,7 @@ public class MetaDataPackageController
     @PreAuthorize( "isAuthenticated()" )
     @RequestMapping ( value = "/{uid}/resource", method = RequestMethod.POST )
     public void addResourceToPackage(@RequestPart( name = "file" ) MultipartFile file,
-                                     @RequestPart( name = "resource" ) Resource resource, @RequestPart( "uid" ) String packageUid,
+                                     @RequestPart( name = "resource" ) Resource resource, @PathVariable( "uid" ) String packageUid,
                                      HttpServletResponse response, HttpServletRequest request )
                                      throws IOException, WebMessageException
     {
@@ -158,11 +158,11 @@ public class MetaDataPackageController
     }
 
     @PreAuthorize( "isAuthenticated()" )
-    @RequestMapping ( value = "/{uid}/version/{ruid}", method = RequestMethod.DELETE )
+    @RequestMapping ( value = "/{uid}/version/{vuid}", method = RequestMethod.DELETE )
     public void removeVersionFromPackage( @PathVariable( "uid" ) String packageUid,
-                                      @PathVariable( "vuid" ) String versionUid,
-                                      HttpServletResponse response, HttpServletRequest request )
-                                      throws IOException, WebMessageException
+                                          @PathVariable( "vuid" ) String versionUid,
+                                          HttpServletResponse response, HttpServletRequest request )
+                                          throws IOException, WebMessageException
     {
         MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
 
@@ -179,6 +179,33 @@ public class MetaDataPackageController
 
         renderService.renderOk( response, request, "Version Removed" );
     }
+
+    @PreAuthorize( "isAuthenticated()" )
+    @RequestMapping ( value = "/{uid}/resource/{ruid}", method = RequestMethod.DELETE )
+    public void removeResourceFromPackage( @PathVariable( "uid" ) String packageUid,
+                                           @PathVariable( "ruid" ) String resourceUid,
+                                           HttpServletResponse response, HttpServletRequest request )
+                                           throws IOException, WebMessageException
+    {
+        MetaDataPackage metaDataPackage = metaDataPackageService.get( packageUid );
+
+        Resource resource = resourceService.get( resourceUid );
+
+        if ( metaDataPackage == null || resource == null )
+        {
+            throw new WebMessageException( WebMessageUtils.notFound( "Entities not found with given ids" ) );
+        }
+
+        decideAccess( metaDataPackage );
+
+        metaDataPackageService.removeResourceFromPackage( metaDataPackage, resource );
+
+        renderService.renderOk( response, request, "Resource Removed" );
+    }
+
+    // -------------------------------------------------------------------------
+    // SUPPORTIVE
+    // -------------------------------------------------------------------------
 
     private void decideAccess( MetaDataPackage metaDataPackage ) throws WebMessageException
     {
