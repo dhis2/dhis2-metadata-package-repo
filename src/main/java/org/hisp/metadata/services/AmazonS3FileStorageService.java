@@ -7,6 +7,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
+import com.google.common.io.Files;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -35,7 +37,7 @@ public class AmazonS3FileStorageService implements FileStorageService
     private static final String AMAZON_URL = "s3.amazonaws.com";
     private static final String BASE_BUCKET = "metadata.dhis2.org";
     private static final String BUCKET_URL = BASE_BUCKET;
-    private static final String FILE_EXTENSION = ".json";
+    private static final String DEFAULT_FILE_EXTENSION = "json";
 
     // -------------------------------------------------------------------------
     // Dependencies
@@ -51,9 +53,11 @@ public class AmazonS3FileStorageService implements FileStorageService
     @Override
     public FileUploadStatus uploadFile( MultipartFile file ) throws WebMessageException
     {
+        String fileExtension = Files.getFileExtension( file.getOriginalFilename() );
+
         FileUploadStatus status = new FileUploadStatus();
 
-        String resourceKey = UUID.randomUUID().toString() + FILE_EXTENSION ;
+        String resourceKey = UUID.randomUUID().toString() + "." + StringUtils.defaultIfEmpty( fileExtension, DEFAULT_FILE_EXTENSION );
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength( Long.valueOf( file.getSize() ));
