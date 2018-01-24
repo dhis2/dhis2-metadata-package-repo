@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,9 +33,8 @@ public class AmazonS3FileStorageService implements FileStorageService
     private static final Log log = LogFactory.getLog( AmazonS3FileStorageService.class );
 
     private static final String AMAZON_URL = "s3.amazonaws.com";
-    private static final String BASE_BUCKET = "dhis2-metadatarepo";
-    private static final String BUCKET_NAME = "metadatarepo-dhis2-org";
-    private static final String BUCKET_URL = BASE_BUCKET + "/" + BUCKET_NAME;
+    private static final String BASE_BUCKET = "metadata.dhis2.org";
+    private static final String BUCKET_URL = BASE_BUCKET;
     private static final String FILE_EXTENSION = ".json";
 
     // -------------------------------------------------------------------------
@@ -65,7 +65,7 @@ public class AmazonS3FileStorageService implements FileStorageService
             request = new PutObjectRequest( BUCKET_URL, resourceKey, file.getInputStream(), metadata );
             request.setCannedAcl( CannedAccessControlList.PublicRead );
 
-            amazonS3Client.putObject( request );
+            PutObjectResult result = amazonS3Client.putObject( request );
 
             status.setUploaded( true );
             status.setDownloadUrl( getDownloadUrl( resourceKey ) );
@@ -97,11 +97,11 @@ public class AmazonS3FileStorageService implements FileStorageService
     @Override
     public void deleteFile( String key )
     {
-        amazonS3Client.deleteObject( BUCKET_NAME, key );
+        amazonS3Client.deleteObject( BASE_BUCKET, key );
     }
 
     private String getDownloadUrl( String resourceKey )
     {
-        return "https://" + BASE_BUCKET + "." + AMAZON_URL + "/" + BUCKET_URL + "/" + resourceKey;
+        return "https://" + BASE_BUCKET + "." + AMAZON_URL  + "/" + resourceKey;
     }
 }

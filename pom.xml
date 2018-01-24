@@ -7,7 +7,7 @@
 	<artifactId>metadatarepo</artifactId>
 	<version>0.9.6</version>
 	<name>MetaData Repository for DHIS 2</name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

@@ -2,10 +2,8 @@ package org.hisp.metadata.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.util.Map;
 import java.util.Set;
 
 /**

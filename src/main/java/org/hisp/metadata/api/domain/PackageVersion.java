@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
-import javax.persistence.Entity;
-
 /**
  * Created by zubair on 03.02.17.
  */
@@ -30,7 +28,7 @@ public class PackageVersion extends BaseIdentifiableObject
 
     public void setVersionUrl( String url )
     {
-        this.versionUrl = versionUrl;
+        this.versionUrl = url;
     }
 
     @JsonProperty

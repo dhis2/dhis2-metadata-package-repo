@@ -1,8 +1,5 @@
 package org.hisp.metadata.web.api;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hisp.metadata.api.domain.FileUploadStatus;
 import org.hisp.metadata.api.domain.MetaDataPackage;
 import org.hisp.metadata.api.domain.PackageStatus;
 import org.hisp.metadata.api.domain.PackageVersion;
