@@ -1,0 +1,19 @@
+language: java
+sudo : false
+jdk:
+- oraclejdk8
+addons:
+  apt:
+    packages:
+    - oracle-java8-installer
+before_install:
+- rm ~/.m2/settings.xml
+cache:
+  directories:
+  - "$HOME/.m2"
+script:
+  -  mvn clean install -DskipTests=false 
+branches:
+  only:
+  - master
+  - "/^2\\.[0-9]{1,}/"
