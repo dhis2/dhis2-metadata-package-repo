@@ -119,6 +119,12 @@ public class BaseIdentifiableObject
         return "[id='" + id + "', uid='" + uid + "', created='" + created + "']";
     }
 
+    @Override
+    public void mergeWith( IdentifiableObject other )
+    {
+
+    }
+
     public void setAutoFields()
     {
         if ( getUid() == null )

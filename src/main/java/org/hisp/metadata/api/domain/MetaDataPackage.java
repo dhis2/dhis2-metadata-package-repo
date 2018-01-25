@@ -158,4 +158,25 @@ public class MetaDataPackage extends BaseIdentifiableObject
                 .add( "organization", this.organization )
                 .toString();
     }
+
+    @Override
+    public void mergeWith( IdentifiableObject other )
+    {
+        MetaDataPackage updatedPackage;
+
+        if ( other != null && other.getClass().isInstance( this) )
+        {
+            updatedPackage = (MetaDataPackage) other;
+
+            this.name = updatedPackage.getName() != null ? updatedPackage.getName() : name;
+            this.description = updatedPackage.getDescription() != null ? updatedPackage.getDescription() : description;
+            this.organization = updatedPackage.getOrganization() != null ? updatedPackage.getOrganization() : organization;
+            this.status = updatedPackage.getStatus() != null ? updatedPackage.getStatus() : status;
+            this.license = updatedPackage.getLicense() != null ? updatedPackage.getLicense() : license;
+            this.tags = updatedPackage.getTags() != null ? updatedPackage.getTags() : tags;
+            this.icons = updatedPackage.getIcons() != null ? updatedPackage.getIcons() : icons;
+            this.versions = updatedPackage.getVersions() != null ? updatedPackage.getVersions() : versions;
+            this.resources = updatedPackage.getResources() != null ? updatedPackage.getResources() : resources;
+        }
+    }
 }

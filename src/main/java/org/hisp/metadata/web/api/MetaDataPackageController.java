@@ -1,5 +1,6 @@
 package org.hisp.metadata.web.api;
 
+import com.amazonaws.services.dynamodbv2.xspec.M;
 import org.hisp.metadata.api.domain.MetaDataPackage;
 import org.hisp.metadata.api.domain.PackageStatus;
 import org.hisp.metadata.api.domain.PackageVersion;
@@ -138,6 +139,26 @@ public class MetaDataPackageController
         metaDataPackageService.setPackageApproval( metaDataPackage, status );
 
         renderService.renderOk( response, request, "Status changed for package: " + metaDataPackage.getName() );
+    }
+
+    // -------------------------------------------------------------------------
+    // PUT
+    // -------------------------------------------------------------------------
+
+    @PreAuthorize( "isAuthenticated()" )
+    @RequestMapping ( value = "/{uid}", method = RequestMethod.PUT )
+    public void updatePackage( @PathVariable( "uid" ) String packageUid, HttpServletResponse response, HttpServletRequest request )
+        throws IOException, WebMessageException
+    {
+        MetaDataPackage persistedPackage = getMetaDataPackage( packageUid );
+
+        MetaDataPackage updatedPackage = renderService.fromJson( request.getInputStream(), MetaDataPackage.class );
+
+        persistedPackage.mergeWith( updatedPackage );
+
+        metaDataPackageService.update( persistedPackage );
+
+        renderService.renderOk( response, request, String.format( "Package: %s has been updated", persistedPackage.getName() ) );
     }
 
     // -------------------------------------------------------------------------
